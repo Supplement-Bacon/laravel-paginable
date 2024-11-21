@@ -38,13 +38,12 @@ trait Paginable
      */
     public function scopePaginator(Builder $query, IndexPaginatedRequest $request, array $withCount = []): LengthAwarePaginator
     {
-        $query->tap(function (Builder $q2) {});
         return $query
 
             // Filter by IDS
             ->when($request->has(IndexPaginatedRequest::IDS), function (Builder $q2) use ($request) {
                 $q2->whereIn(
-                    $this->getKey(),
+                    $this->getKeyName() ?? 'id',
                     $request->{IndexPaginatedRequest::IDS}
                 );
 
