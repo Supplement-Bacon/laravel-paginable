@@ -1,6 +1,7 @@
 {
     "name": "supplement-bacon/laravel-paginable",
-    "description": "Easily handle pagination requests",
+    "version": "1.0.0",
+    "description": "Easily handle paginated requests",
     "keywords": [
         "supplement-bacon",
         "laravel-paginable"
