@@ -2,7 +2,7 @@
 
 namespace SupplementBacon\LaravelPaginable;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use SupplementBacon\LaravelPaginable\Requests\IndexPaginatedRequest;
 
@@ -28,18 +28,17 @@ trait Paginable
     }
 
     /**
-     * Scope a query to only include popular users.
+     * Scope a query by applying ids/filters/search/sort from IndexPaginatedRequest
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \App\Http\Requests\API\V1\IndexPaginatedRequest  $request
-     * @param  array<string>  $withCount
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \SupplementBacon\LaravelPaginable\Requests\IndexPaginatedRequest $request
+     * @param  array<string> $withCount
      * 
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return \Illuminate\Database\Eloquent\Builder $query
      */
-    public function scopePaginator(Builder $query, IndexPaginatedRequest $request, array $withCount = []): LengthAwarePaginator
+    public function scopePaginatorQuery(Builder $query, IndexPaginatedRequest $request, array $withCount = []): Builder
     {
         return $query
-
             // Filter by IDS
             ->when($request->has(IndexPaginatedRequest::IDS), function (Builder $q2) use ($request) {
                 $q2->whereIn(
@@ -85,7 +84,23 @@ trait Paginable
             // With count
             ->when(count($withCount) > 0, function (Builder $q2) use ($withCount) {
                 $q2->withCount($withCount);
-            })
+            });
+    }
+
+    /**
+     * Scope a query by applying ids/filters/search/sort from IndexPaginatedRequest
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \SupplementBacon\LaravelPaginable\Requests\IndexPaginatedRequest $request
+     * @param  array<string> $withCount
+     * 
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function scopePaginator(Builder $query, IndexPaginatedRequest $request, array $withCount = []): LengthAwarePaginator
+    {
+        return $query
+            // Apply the request filters, searchs, sorts, etc.
+            ->paginatorQuery($request, $withCount)
 
             // Finally paginate the result
             ->paginate(

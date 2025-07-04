@@ -1,6 +1,6 @@
 {
     "name": "supplement-bacon/laravel-paginable",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Easily handle paginated requests",
     "keywords": [
         "supplement-bacon",
@@ -18,9 +18,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^10.0|^11.0"
+        "illuminate/support": "^11.45"
     },
-    "require-dev": {},
     "autoload": {
         "psr-4": {
             "SupplementBacon\\LaravelPaginable\\": "src"
